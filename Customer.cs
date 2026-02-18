@@ -18,7 +18,8 @@ namespace AutoPartsStore
         public int CarYear { get; set; }               // Год выпуска автомобиля
         public string LicensePlate { get; set; }       // Номерной знак
         
-        // TODO 1: Добавить свойство VIN (VIN-код автомобиля)
+        // TODO 1: Добавлено свойство VIN (VIN-код автомобиля)
+        public string VIN { get; set; }               
         
         private List<Order> orders = new List<Order>(); // История заказов
         
@@ -78,6 +79,10 @@ namespace AutoPartsStore
         public void UpdateCarInfo(string brand, string model, int year, string vin)
         {
             // Обновить свойства CarBrand, CarModel, CarYear, VIN
+            CarBrand = brand;
+            CarModel = model;
+            CarYear = year;
+            VIN = vin;
         }
         
         // Показать информацию о клиенте
@@ -88,6 +93,7 @@ namespace AutoPartsStore
             Console.WriteLine($"Автомобиль: {CarBrand} {CarModel} {CarYear} г.");
             Console.WriteLine($"Гос. номер: {LicensePlate}");
             // TODO 1: Вывести VIN-код
+            Console.WriteLine($"VIN: {VIN}");
             Console.WriteLine($"Всего заказов: {orders.Count}");
         }
     }
