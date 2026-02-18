@@ -3,6 +3,7 @@
 // 2. Реализовать расчет стоимости комплекта
 // 3. Реализовать проверку совместимости комплекта с автомобилем
 
+using System;
 using System.Collections.Generic;
 
 namespace AutoPartsStore
@@ -20,6 +21,7 @@ namespace AutoPartsStore
         private Dictionary<AutoPart, int> parts = new Dictionary<AutoPart, int>(); // Запчасти и их количество
         
         // TODO 1: Добавить свойство Difficulty (сложность ремонта: простая, средняя, сложная)
+        public string Difficulty { get; set; }         // Сложность ремонта
         
         public RepairKit(int id, string name, string repairType, string brand, string model, int yearFrom, int yearTo, string difficulty)
         {
@@ -30,7 +32,9 @@ namespace AutoPartsStore
             CarModel = model;
             ModelYearsFrom = yearFrom;
             ModelYearsTo = yearTo;
+            
             // TODO 1: Сохранить сложность ремонта
+            Difficulty = difficulty;
         }
         
         // TODO 2: Добавить запчасть в комплект
