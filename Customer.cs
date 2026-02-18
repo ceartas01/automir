@@ -17,9 +17,7 @@ namespace AutoPartsStore
         public string CarModel { get; set; }           // Модель автомобиля
         public int CarYear { get; set; }               // Год выпуска автомобиля
         public string LicensePlate { get; set; }       // Номерной знак
-        
-        // TODO 1: Добавлено свойство VIN (VIN-код автомобиля)
-        public string VIN { get; set; }               
+        public string VIN { get; set; }                // VIN-код автомобиля
         
         private List<Order> orders = new List<Order>(); // История заказов
         
@@ -44,25 +42,46 @@ namespace AutoPartsStore
         public Order CreateOrder()
         {
             // Создать новый объект Order
+            Order order = new Order();
+            
             // Установить текущую дату
+            order.OrderDate = DateTime.Now;
+            
             // Установить начальный статус
+            order.Status = "Оформлен";
+            
             // Добавить заказ в историю orders
+            orders.Add(order);
+            
             // Вернуть созданный заказ
-            return null;
+            return order;
         }
         
         // TODO 2: Добавить запчасть в заказ
         public bool AddToOrder(Order order, AutoPart part, int quantity, string purpose)
         {
             // Проверить совместимость запчасти с автомобилем клиента (part.IsCompatible)
+            if (!part.IsCompatible(CarBrand, CarModel, CarYear))
+                return false;
+            
             // Проверить наличие на складе (part.IsInStock)
+            if (!part.IsInStock(quantity))
+                return false;
+            
             // Если все условия выполнены:
             //   - Создать OrderItem с указанием назначения
+            OrderItem item = new OrderItem
+            {
+                Part = part,
+                Quantity = quantity,
+                Purpose = purpose
+            };
+            
             //   - Добавить в Items заказа
+            order.Items.Add(item);
+            
             //   - Вернуть true
-            // Если условия не выполнены:
-            //   - Вернуть false
-            return false;
+            return true;
         }
         
         // TODO 3: Рассчитать стоимость заказа
@@ -71,7 +90,12 @@ namespace AutoPartsStore
             decimal total = 0;
             
             // Пройти по всем запчастям в заказе
-            // Суммировать: part.Price * quantity
+            foreach (var item in order.Items)
+            {
+                // Суммировать: part.Price * quantity
+                total += item.Part.Price * item.Quantity;
+            }
+            
             return total;
         }
         
