@@ -42,6 +42,14 @@ namespace AutoPartsStore
         {
             // Добавить запчасть в словарь parts
             // Если запчасть уже есть - увеличить количество
+            if (parts.ContainsKey(part))
+            {
+                parts[part] += quantity;
+            }
+            else
+            {
+                parts[part] = quantity;
+            }
         }
         
         // TODO 2: Рассчитать стоимость комплекта
@@ -50,7 +58,12 @@ namespace AutoPartsStore
             decimal total = 0;
             
             // Пройти по всем запчастям в комплекте
-            // Суммировать: part.Price * quantity
+            foreach (var item in parts)
+            {
+                // Суммировать: part.Price * quantity
+                total += item.Key.Price * item.Value;
+            }
+            
             return total;
         }
         
@@ -75,6 +88,11 @@ namespace AutoPartsStore
             // Проверить для каждой запчасти в комплекте:
             // part.IsInStock(quantity)
             // Вернуть true только если ВСЕ запчасти в наличии
+            foreach (var item in parts)
+            {
+                if (!item.Key.IsInStock(item.Value))
+                    return false;
+            }
             return true;
         }
         
