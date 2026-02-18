@@ -78,8 +78,14 @@ namespace AutoPartsStore
         public bool IsCompatibleWithCar(string brand, string model, int year)
         {
             // Проверить что марка и модель совпадают
+            if (CarBrand != brand || CarModel != model)
+                return false;
+            
             // Проверить что год выпуска в диапазоне ModelYearsFrom - ModelYearsTo
-            return false;
+            if (year < ModelYearsFrom || year > ModelYearsTo)
+                return false;
+            
+            return true;
         }
         
         // TODO 3: Проверить доступность всех запчастей комплекта
