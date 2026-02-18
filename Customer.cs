@@ -96,6 +96,9 @@ namespace AutoPartsStore
                 total += item.Part.Price * item.Quantity;
             }
             
+            // TODO 3: Обновить TotalAmount заказа
+            order.TotalAmount = total; // теперь TotalAmount действительно обновляется
+            
             return total;
         }
         
