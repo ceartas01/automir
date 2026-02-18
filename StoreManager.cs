@@ -3,6 +3,7 @@
 // 2. Реализовать поиск клиента по номеру телефона или госномеру
 // 3. Реализовать подбор запчастей по автомобилю
 
+using System;
 using System.Collections.Generic;
 
 namespace AutoPartsStore
@@ -21,11 +22,26 @@ namespace AutoPartsStore
         public Customer RegisterCustomer(string fullName, string phone, string brand, string model, int year, string licensePlate, string vin)
         {
             // Создать нового клиента с уникальным ID
-            // Установить все данные об автомобиле
+            Customer customer = new Customer
+            {
+                Id = nextCustomerId,
+                FullName = fullName,
+                Phone = phone,
+                CarBrand = brand,
+                CarModel = model,
+                CarYear = year,
+                LicensePlate = licensePlate,
+                VIN = vin
+            };
+            
             // Добавить клиента в список customers
+            customers.Add(customer);
+            
             // Увеличить nextCustomerId
+            nextCustomerId++;
+            
             // Вернуть созданного клиента
-            return null;
+            return customer;
         }
         
         // TODO 2: Найти клиента по номеру телефона
@@ -34,6 +50,11 @@ namespace AutoPartsStore
             // Пройти по всем клиентам в списке customers
             // Если телефон совпадает - вернуть клиента
             // Если не найден - вернуть null
+            foreach (var customer in customers)
+            {
+                if (customer.Phone == phone)
+                    return customer;
+            }
             return null;
         }
         
@@ -43,6 +64,11 @@ namespace AutoPartsStore
             // Пройти по всем клиентам в списке customers
             // Если госномер совпадает - вернуть клиента
             // Если не найден - вернуть null
+            foreach (var customer in customers)
+            {
+                if (customer.LicensePlate == licensePlate)
+                    return customer;
+            }
             return null;
         }
         
@@ -52,9 +78,20 @@ namespace AutoPartsStore
             List<AutoPart> result = new List<AutoPart>();
             
             // Пройти по всем запчастям
-            // Проверить совместимость с автомобилем (IsCompatible)
-            // Если категория указана - проверить соответствие
-            // Добавить подходящие запчасти в результат
+            foreach (var part in parts)
+            {
+                // Проверить совместимость с автомобилем (IsCompatible)
+                if (!part.IsCompatible(brand, model, year))
+                    continue;
+                
+                // Если категория указана - проверить соответствие
+                if (category != null && part.Category != category)
+                    continue;
+                
+                // Добавить подходящие запчасти в результат
+                result.Add(part);
+            }
+            
             return result;
         }
         
@@ -64,8 +101,16 @@ namespace AutoPartsStore
             List<RepairKit> result = new List<RepairKit>();
             
             // Пройти по всем ремонтным комплектам
-            // Проверить совместимость с автомобилем (IsCompatibleWithCar)
-            // Добавить подходящие комплекты в результат
+            foreach (var kit in repairKits)
+            {
+                // Проверить совместимость с автомобилем (IsCompatibleWithCar)
+                if (kit.IsCompatibleWithCar(brand, model, year))
+                {
+                    // Добавить подходящие комплекты в результат
+                    result.Add(kit);
+                }
+            }
+            
             return result;
         }
         
@@ -80,6 +125,7 @@ namespace AutoPartsStore
         public void RecordSale(decimal amount)
         {
             // Увеличить totalRevenue на amount
+            totalRevenue += amount;
         }
         
         // Готовые методы:
