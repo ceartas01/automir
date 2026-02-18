@@ -21,7 +21,6 @@ namespace AutoPartsStore
         // TODO 1: Зарегистрировать нового клиента
         public Customer RegisterCustomer(string fullName, string phone, string brand, string model, int year, string licensePlate, string vin)
         {
-            // Создать нового клиента с уникальным ID
             Customer customer = new Customer
             {
                 Id = nextCustomerId,
@@ -34,41 +33,30 @@ namespace AutoPartsStore
                 VIN = vin
             };
             
-            // Добавить клиента в список customers
             customers.Add(customer);
-            
-            // Увеличить nextCustomerId
             nextCustomerId++;
-            
-            // Вернуть созданного клиента
             return customer;
         }
         
         // TODO 2: Найти клиента по номеру телефона
         public Customer FindCustomerByPhone(string phone)
         {
-            // Пройти по всем клиентам в списке customers
             foreach (var customer in customers)
             {
-                // Если телефон совпадает - вернуть клиента
                 if (customer.Phone == phone)
                     return customer;
             }
-            // Если не найден - вернуть null
             return null;
         }
         
         // TODO 2: Найти клиента по госномеру
         public Customer FindCustomerByLicensePlate(string licensePlate)
         {
-            // Пройти по всем клиентам в списке customers
             foreach (var customer in customers)
             {
-                // Если госномер совпадает - вернуть клиента
                 if (customer.LicensePlate == licensePlate)
                     return customer;
             }
-            // Если не найден - вернуть null
             return null;
         }
         
@@ -77,18 +65,12 @@ namespace AutoPartsStore
         {
             List<AutoPart> result = new List<AutoPart>();
             
-            // Пройти по всем запчастям
             foreach (var part in parts)
             {
-                // Проверить совместимость с автомобилем (IsCompatible)
                 if (!part.IsCompatible(brand, model, year))
                     continue;
-                
-                // Если категория указана - проверить соответствие
                 if (category != null && part.Category != category)
                     continue;
-                
-                // Добавить подходящие запчасти в результат
                 result.Add(part);
             }
             
@@ -100,15 +82,10 @@ namespace AutoPartsStore
         {
             List<RepairKit> result = new List<RepairKit>();
             
-            // Пройти по всем ремонтным комплектам
             foreach (var kit in repairKits)
             {
-                // Проверить совместимость с автомобилем (IsCompatibleWithCar)
                 if (kit.IsCompatibleWithCar(brand, model, year))
-                {
-                    // Добавить подходящие комплекты в результат
                     result.Add(kit);
-                }
             }
             
             return result;
@@ -117,18 +94,16 @@ namespace AutoPartsStore
         // TODO 3: Создать номер заказа
         public int GetNextOrderNumber()
         {
-            // Вернуть nextOrderNumber и увеличить его на 1
             return nextOrderNumber++;
         }
         
         // TODO 3: Зафиксировать продажу
         public void RecordSale(decimal amount)
         {
-            // Увеличить totalRevenue на amount
             totalRevenue += amount;
         }
         
-        // Готовые методы:
+        // Готовые методы для добавления запчастей и комплектов
         public void AddPart(AutoPart part)
         {
             parts.Add(part);
