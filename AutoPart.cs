@@ -36,8 +36,9 @@ namespace AutoPartsStore
         
         public override string ToString()
         {
-            // TODO 3: Вернуть строку в формате "Тормозной диск Toyota Corolla 2015 (тормоза) - 3200 руб. (12 мес гарантии)"
-            return Name;
+            // TODO 3: Вернуть строку в формате
+            // "Тормозной диск Toyota Corolla 2015 (тормоза) - 3200 руб. (12 мес гарантии)"
+            return $"{Name} {CarBrand} {CarModel} {ProductionYear} ({Category}) - {Price} руб. ({WarrantyMonths} мес гарантии)";
         }
         
         // Проверить совместимость с автомобилем
