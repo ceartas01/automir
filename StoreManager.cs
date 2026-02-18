@@ -48,13 +48,13 @@ namespace AutoPartsStore
         public Customer FindCustomerByPhone(string phone)
         {
             // Пройти по всем клиентам в списке customers
-            // Если телефон совпадает - вернуть клиента
-            // Если не найден - вернуть null
             foreach (var customer in customers)
             {
+                // Если телефон совпадает - вернуть клиента
                 if (customer.Phone == phone)
                     return customer;
             }
+            // Если не найден - вернуть null
             return null;
         }
         
@@ -62,13 +62,13 @@ namespace AutoPartsStore
         public Customer FindCustomerByLicensePlate(string licensePlate)
         {
             // Пройти по всем клиентам в списке customers
-            // Если госномер совпадает - вернуть клиента
-            // Если не найден - вернуть null
             foreach (var customer in customers)
             {
+                // Если госномер совпадает - вернуть клиента
                 if (customer.LicensePlate == licensePlate)
                     return customer;
             }
+            // Если не найден - вернуть null
             return null;
         }
         
