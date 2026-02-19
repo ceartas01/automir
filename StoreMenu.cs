@@ -121,23 +121,85 @@ namespace AutoPartsStore
         public void ProcessOrder()
         {
             Console.WriteLine("=== ОФОРМЛЕНИЕ ЗАКАЗА НА ЗАПЧАСТИ ===");
-            
-            // 1. Найти клиента по телефону или госномеру
+
+            // 1. Найти клиента по телефону
+            Console.Write("Введите номер телефона клиента: ");
+            string phone = Console.ReadLine();
+
+            Customer customer = manager.FindCustomerByPhone(phone);
+
             // 2. Если клиент не найден - зарегистрировать нового
-            // 3. Спросить: покупать отдельные запчасти или ремонтный комплект
-            // 4. Если отдельные запчасти:
-            //    - Найти запчасти для автомобиля клиента
-            //    - В цикле добавлять запчасти в заказ с указанием назначения
-            // 5. Если ремонтный комплект:
-            //    - Найти комплекты для автомобиля клиента
-            //    - Выбрать комплект
-            //    - Проверить совместимость и доступность
-            //    - Добавить все запчасти из комплекта в заказ
+            if (customer == null)
+            {
+                Console.WriteLine("Клиент не найден. Регистрация нового клиента.");
+
+                Console.Write("ФИО: ");
+                string name = Console.ReadLine();
+
+                Console.Write("Марка авто: ");
+                string brand = Console.ReadLine();
+
+                Console.Write("Модель авто: ");
+                string model = Console.ReadLine();
+
+                Console.Write("Год выпуска: ");
+                int year = int.Parse(Console.ReadLine());
+
+                Console.Write("Госномер: ");
+                string license = Console.ReadLine();
+
+                Console.Write("VIN: ");
+                string vin = Console.ReadLine();
+
+                customer = manager.RegisterCustomer(name, phone, brand, model, year, license, vin);
+            }
+
+            // 3. Создать заказ
+            var order = customer.CreateOrder();
+            order.OrderNumber = manager.GetNextOrderNumber();
+
+            // 4. Найти запчасти для автомобиля клиента
+            List<AutoPart> parts = manager.FindPartsForCar(customer.CarBrand, customer.CarModel, customer.CarYear);
+
+            if (parts.Count == 0)
+            {
+                Console.WriteLine("Нет доступных запчастей.");
+                return;
+            }
+
+            Console.WriteLine("Доступные запчасти:");
+            for (int i = 0; i < parts.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {parts[i]}");
+            }
+
+            // 5. Добавление запчастей в заказ
+            Console.Write("Выберите номер запчасти: ");
+            int choice = int.Parse(Console.ReadLine()) - 1;
+
+            Console.Write("Количество: ");
+            int quantity = int.Parse(Console.ReadLine());
+
+            if (customer.AddToOrder(order, parts[choice], quantity, "Ремонт"))
+            {
+                parts[choice].Sell(quantity);
+                Console.WriteLine("Запчасть добавлена в заказ.");
+            }
+            else
+            {
+                Console.WriteLine("Не удалось добавить запчасть.");
+            }
+
             // 6. Рассчитать стоимость заказа
-            // 7. Зафиксировать продажу через manager.RecordSale()
-            // 8. Обновить остатки запчастей на складе
-            // 9. Выдать номер заказа и дату готовности
-        }
+            decimal total = customer.CalculateOrderTotal(order);
+            order.TotalAmount = total;
+
+            // 7. Зафиксировать продажу
+            manager.RecordSale(total);
+
+            Console.WriteLine($"Заказ оформлен. Номер заказа: {order.OrderNumber}");
+            Console.WriteLine($"Сумма к оплате: {total} руб.");
+        }   
         
         // TODO 3: Консультация по ремонту
         public void ProvideRepairConsultation()
