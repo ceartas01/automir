@@ -205,26 +205,74 @@ namespace AutoPartsStore
         public void ProvideRepairConsultation()
         {
             Console.WriteLine("=== КОНСУЛЬТАЦИЯ ПО РЕМОНТУ ===");
-            
-            // 1. Запросить данные автомобиля (марка, модель, год)
-            // 2. Запросить тип проблемы (стук, течь, не заводится и т.д.)
-            // 3. На основе проблемы предложить возможные ремонтные комплекты
-            // 4. Показать необходимые запчасти
-            // 5. Предложить альтернативные варианты (оригинал/аналог)
-            // 6. Рассчитать примерную стоимость ремонта
+
+            // 1. Запросить данные автомобиля
+            Console.Write("Марка автомобиля: ");
+            string brand = Console.ReadLine();
+
+            Console.Write("Модель автомобиля: ");
+            string model = Console.ReadLine();
+
+            Console.Write("Год выпуска: ");
+            int year;
+            while (!int.TryParse(Console.ReadLine(), out year))
+            {
+                Console.Write("Введите корректный год: ");
+            }
+
+            // 2. Запросить тип проблемы
+            Console.Write("Опишите проблему (например: стук, течь масла, не заводится): ");
+            string problem = Console.ReadLine().ToLower();
+
+            // 3. Найти подходящие запчасти
+            List<AutoPart> parts = manager.FindPartsForCar(brand, model, year);
+
+            if (parts.Count == 0)
+            {
+                Console.WriteLine("Подходящих запчастей не найдено.");
+                return;
+            }
+
+            Console.WriteLine("\nРекомендуемые запчасти:");
+            foreach (var part in parts)
+            {
+                Console.WriteLine(part);
+            }
+
+            // 4. Рассчитать примерную стоимость (средняя по найденным)
+            decimal approxTotal = 0;
+            foreach (var part in parts)
+            {
+                approxTotal += part.Price;
+            }
+
+            Console.WriteLine($"\nПримерная стоимость ремонта (если менять всё): {approxTotal} руб.");
         }
         
         // TODO 3: Показать статистику магазина
         public void ShowStoreStats()
         {
             Console.WriteLine("=== СТАТИСТИКА МАГАЗИНА ===");
-            
-            // Вывести общую выручку через manager.GetTotalRevenue()
-            // Вывести количество зарегистрированных клиентов
-            // Вывести самые популярные марки автомобилей
-            // Вывести самые продаваемые категории запчастей
-            // Вывести запчасти с низким остатком на складе (< 3 шт.)
+
+            // Общая выручка
+            Console.WriteLine($"Общая выручка: {manager.GetTotalRevenue()} руб.");
+
+            // Количество клиентов
+            Console.WriteLine($"Количество клиентов: {manager.GetCustomerCount()}");
+
+            // Запчасти с низким остатком
+            Console.WriteLine("\nЗапчасти с низким остатком (< 3 шт.):");
+
+            var parts = manager.GetAllParts();
+            foreach (var part in parts)
+            {
+                if (part.StockQuantity < 3)
+                {
+                    Console.WriteLine(part);
+                }
+            }
         }
+
         
         // Готовый метод - главное меню
         public void ShowMainMenu()
