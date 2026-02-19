@@ -3,6 +3,11 @@
 // 2. Реализовать оформление заказа на запчасти
 // 3. Реализовать консультацию по подбору запчастей для ремонта
 
+// TODO:
+// 1. Реализовать поиск запчастей по автомобилю
+// 2. Реализовать оформление заказа на запчасти
+// 3. Реализовать консультацию по подбору запчастей для ремонта
+
 using System;
 using System.Collections.Generic;
 
@@ -38,23 +43,78 @@ namespace AutoPartsStore
         public void SearchPartsByCar()
         {
             Console.WriteLine("=== ПОИСК ЗАПЧАСТЕЙ ПО АВТОМОБИЛЮ ===");
-            
+
             // 1. Запросить марку автомобиля
+            Console.Write("Введите марку автомобиля: ");
+            string brand = Console.ReadLine();
+
             // 2. Запросить модель
+            Console.Write("Введите модель автомобиля: ");
+            string model = Console.ReadLine();
+
             // 3. Запросить год выпуска
+            Console.Write("Введите год выпуска автомобиля: ");
+            int year;
+            while (!int.TryParse(Console.ReadLine(), out year))
+            {
+                Console.Write("Некорректный ввод. Введите год выпуска цифрами: ");
+            }
+
             // 4. Найти запчасти через manager.FindPartsForCar()
+            List<AutoPart> foundParts = manager.FindPartsForCar(brand, model, year);
+
             // 5. Сгруппировать найденные запчасти по категориям
+            var partsByCategory = new Dictionary<string, List<AutoPart>>();
+            foreach (var part in foundParts)
+            {
+                if (!partsByCategory.ContainsKey(part.Category))
+                    partsByCategory[part.Category] = new List<AutoPart>();
+                partsByCategory[part.Category].Add(part);
+            }
+
             // 6. Вывести результат поиска
+            if (foundParts.Count == 0)
+            {
+                Console.WriteLine("Подходящие запчасти не найдены.");
+                return;
+            }
+
+            foreach (var category in partsByCategory.Keys)
+            {
+                Console.WriteLine($"\n=== Категория: {category} ===");
+                foreach (var part in partsByCategory[category])
+                {
+                    Console.WriteLine(part.ToString());
+                }
+            }
         }
         
         // TODO 1: Показать ремонтные комплекты
         public void ShowRepairKits()
         {
             Console.WriteLine("=== РЕМОНТНЫЕ КОМПЛЕКТЫ ===");
-            
+
             // Получить все комплекты через manager.GetAllRepairKits()
+            List<RepairKit> kits = manager.GetAllRepairKits();
+
             // Сгруппировать комплекты по типу ремонта
+            var kitsByType = new Dictionary<string, List<RepairKit>>();
+            foreach (var kit in kits)
+            {
+                if (!kitsByType.ContainsKey(kit.RepairType))
+                    kitsByType[kit.RepairType] = new List<RepairKit>();
+                kitsByType[kit.RepairType].Add(kit);
+            }
+
             // Для каждого комплекта вызвать ShowKitComposition()
+            foreach (var type in kitsByType.Keys)
+            {
+                Console.WriteLine($"\n=== Тип ремонта: {type} ===");
+                foreach (var kit in kitsByType[type])
+                {
+                    kit.ShowKitComposition();
+                }
+            }
         }
         
         // TODO 2: Оформить заказ на запчасти
